@@ -499,15 +499,16 @@ ALTER TABLE ProductBugTaskData
 	ADD CONSTRAINT PK_ProductBugTaskData_BugID PRIMARY KEY CLUSTERED (BugID);
 
 
--- Set primary key for ProductBugTaskData
+-- Set primary key for RegionAndVerticalData
 
-ALTER TABLE ProductBugTaskData
-	ADD BugID INT IDENTITY(1,1) NOT NULL;
-
-ALTER TABLE ProductBugTaskData
-	ADD CONSTRAINT PK_ProductBugTaskData_BugID PRIMARY KEY CLUSTERED (BugID);
+ALTER TABLE RegionAndVerticalData
+	ADD CONSTRAINT PK_RegionAndVerticalData_CustomerID PRIMARY KEY CLUSTERED (CustomerID);
 
 
+-- Set primary key for StatusAndLevelData
+
+ALTER TABLE StatusAndLevelData
+	ADD CONSTRAINT PK_StatusAndLevelData_CustomerID PRIMARY KEY CLUSTERED (CustomerID);
 
 
 
