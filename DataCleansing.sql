@@ -4,7 +4,7 @@ USE BusinessDataset2022;
 
 BEGIN TRANSACTION;
 
--- 1. Verify Data types and Column names
+--------------------------- 1. Verify Data types and Column names --------------------------------------------------
 
 
 -- 1.1 CSATSurveyData
@@ -427,7 +427,9 @@ ALTER TABLE dbo.StatusAndLevelData
 
 
 
--- 2. Define Primary keys
+-------------------------------- 2. Define Primary keys ----------------------------------------------------
+
+
 
 -- a. Verify existing indexes
 
@@ -446,6 +448,8 @@ EXEC sp_pkeys ProductBugTaskData;
 EXEC sp_pkeys RegionAndVerticalData;
 
 EXEC sp_pkeys StatusAndLevelData;
+
+EXEC sp_pkeys NewsletterInteractionData;
 
 
 -- Results: No primary keys found
@@ -509,6 +513,56 @@ ALTER TABLE RegionAndVerticalData
 
 ALTER TABLE StatusAndLevelData
 	ADD CONSTRAINT PK_StatusAndLevelData_CustomerID PRIMARY KEY CLUSTERED (CustomerID);
+
+
+-- Set primary key for NewsletterInteractionData
+
+ALTER TABLE NewsletterInteractionData
+	ADD CONSTRAINT PK_NewsletterInteractionData_CustomerID PRIMARY KEY CLUSTERED (CustomerID);
+
+
+------------------------------------ 3. Define foreign keys -------------------------------------
+
+-- 3.1 Checking created PKs
+
+SELECT *
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+
+/*
+	Based on the query result:
+
+		The Fact tables are: CSATSurveyData, HelpTicketData, ProductBugTaskData
+
+		The rest are dimension tables
+*/
+
+
+-- 3.2 Rename tables to differentiate between fact and dimension tables
+
+
+EXEC sp_rename 'dbo.CSATSurveyData', 'FactCSATSurveyData';
+
+EXEC sp_rename 'dbo.CustomerAgeData', 'DimCustomerAgeData';
+
+EXEC sp_rename 'dbo.CustomerMRRData', 'DimCustomerMRRData';
+
+EXEC sp_rename 'dbo.CustomerRevenueData', 'DimCustomerRevenueData';
+
+EXEC sp_rename 'dbo.HelpTicketData', 'FactHelpTicketData';
+
+EXEC sp_rename 'dbo.ProductBugTaskData', 'FactProductBugTaskData';
+
+EXEC sp_rename 'dbo.RegionAndVerticalData', 'DimRegionAndVerticalData';
+
+EXEC sp_rename 'dbo.StatusAndLevelData', 'DimStatusAndLevelData';
+
+EXEC sp_rename 'dbo.NewsletterInteractionData', 'DimNewsletterInteractionData';
+
+
+
+
+
+
 
 
 
