@@ -559,8 +559,43 @@ EXEC sp_rename 'dbo.StatusAndLevelData', 'DimStatusAndLevelData';
 EXEC sp_rename 'dbo.NewsletterInteractionData', 'DimNewsletterInteractionData';
 
 
+/*
+	Based on how the tables are normalized and because tables were split in order to facilitate the trend analysis,
+	create FK on the fact tables would require to point multiple dimension tables, therefore compromising the data integrity.
+	Because of this no FK will be define for the current setup, instead will use CustomerID in each Fact table as an index
+	to avoid full scans when searching specific values.
+
+*/
 
 
+
+-- 3.3 Creating clustered indexes
+
+
+-- FactCSATSurveyData
+
+CREATE NONCLUSTERED INDEX NCI_FactCSATSurveyData_CustomerID
+	ON dbo.FactCSATSurveyData (CustomerID);
+
+
+-- FactHelpTicketData
+
+CREATE NONCLUSTERED INDEX NCI_FactHelpTicketData_CustomerID
+	ON dbo.FactHelpTicketData (CustomerID);
+
+
+-- FactProductBugTaskData
+
+CREATE NONCLUSTERED INDEX NCI_FactProductBugTaskData_CustomerID
+	ON dbo.FactProductBugTaskData (CustomerID);
+
+
+
+-- Check created indexes 
+
+SELECT *
+FROM sys.indexes
+WHERE type_desc = 'NONCLUSTERED'
 
 
 
