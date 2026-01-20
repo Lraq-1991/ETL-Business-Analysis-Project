@@ -593,9 +593,83 @@ CREATE NONCLUSTERED INDEX NCI_FactProductBugTaskData_CustomerID
 
 -- Check created indexes 
 
-SELECT *
+SELECT name
 FROM sys.indexes
 WHERE type_desc = 'NONCLUSTERED'
+
+
+
+----------------------------------------------------------------------
+
+-- Aftermath Update: Converting NULLs into more appropriate values
+
+
+SELECT *
+FROM FactCSATSurveyData
+WHERE PanelUsabilityRate IS NULL;
+
+UPDATE FactCSATSurveyData
+	SET UserFrequency = 0	-- 0 will represent "No feedback provided"
+	WHERE PanelUsabilityRate IS NULL;
+
+
+SELECT *
+FROM FactCSATSurveyData
+WHERE UserFrequency IS NULL;
+
+UPDATE FactCSATSurveyData
+	SET UserFrequency = 'No response'
+	WHERE UserFrequency IS NULL;
+
+
+
+
+SELECT *
+FROM [dbo].[DimRegionAndVerticalData]
+WHERE Vertical = 'Real Estate';
+
+UPDATE DimRegionAndVerticalData
+	SET Subvertical = 'Real Estate'
+	WHERE Vertical = 'Real Estate'
+	AND Subvertical IS NULL;
+
+
+UPDATE DimRegionAndVerticalData
+	SET 
+		Subvertical = 'No information provided',
+		Vertical = 'No information provided'
+	WHERE Subvertical IS NULL
+	AND Vertical IS NULL;
+
+
+
+SELECT *
+FROM DimRegionAndVerticalData
+WHERE Vertical = 'Retail'
+
+DELETE FROM DimRegionAndVerticalData
+	WHERE Vertical = 'Retail'
+	AND Subvertical IS NULL;
+
+DELETE FROM DimRegionAndVerticalData
+	WHERE Subvertical IS NULL
+	AND Vertical IS NOT NULL;
+
+
+UPDATE DimRegionAndVerticalData
+	SET Vertical = 'Other'
+	WHERE Vertical IS NULL;
+
+
+
+SELECT *
+FROM [dbo].[DimStatusAndLevelData]
+WHERE CustomerLevel IS NULL
+
+UPDATE DimStatusAndLevelData
+	SET CustomerLevel = 'No categorized'
+	WHERE CustomerLevel IS NULL;
+
 
 
 
