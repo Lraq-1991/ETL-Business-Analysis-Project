@@ -1,15 +1,18 @@
 ------- Views -----------------
 
+USE BusinessDataset2022
+
+
 BEGIN TRANSACTION;
 GO
 
 
-CREATE OR ALTER VIEW vDimCustomers
+CREATE OR ALTER VIEW vCustomers
 AS
 WITH ListOfCustomers
-AS(
+AS(	-- List of unique CustomerID keys
 	SELECT DISTINCT CustomerID
-	FROM DimCustomerAgeData
+	FROM [dbo].[DimCustomerAgeData]
 	UNION 
 	SELECT DISTINCT CustomerID
 	FROM DimCustomerMRRData
@@ -26,7 +29,7 @@ AS(
 	SELECT DISTINCT CustomerID
 	FROM DimStatusAndLevelData
 )
-SELECT 
+SELECT	-- Populate information from different dimension tables
 	cte.CustomerID,
 	age.CustomerAgeInMonths,
 	mrr.MonthlyRecurringRevenue,
