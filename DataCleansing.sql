@@ -441,7 +441,7 @@ EXEC sp_pkeys CustomerMRRData;
 
 EXEC sp_pkeys CustomerRevenueData;
 
-EXEC sp_pkeys HelpTicketData;
+EXEC sp_pkeys FactHelpTicketData;
 
 EXEC sp_pkeys ProductBugTaskData;
 
@@ -488,20 +488,12 @@ ALTER TABLE CustomerRevenueData
 -- Set primary key for HelpTicketData
 
 ALTER TABLE HelpTicketData
-	ADD TicketID INT IDENTITY(1,1) NOT NULL;
+	ADD CONSTRAINT PK_HelpTicketData_CustomerID PRIMARY KEY CLUSTERED (CustomerID);
 
-ALTER TABLE HelpTicketData
-	ADD CONSTRAINT PK_HelpTicketData_TicketID PRIMARY KEY CLUSTERED (TicketID);
+-- Set primary key for ProductBugTaskData, I had removed duplicates first
 
-
--- Set primary key for ProductBugTaskData
-
-ALTER TABLE ProductBugTaskData
-	ADD BugID INT IDENTITY(1,1) NOT NULL;
-
-ALTER TABLE ProductBugTaskData
-	ADD CONSTRAINT PK_ProductBugTaskData_BugID PRIMARY KEY CLUSTERED (BugID);
-
+ALTER TABLE FactProductBugTaskData
+	ADD CONSTRAINT PK_ProductBugTaskData_CustomerID PRIMARY KEY CLUSTERED (CustomerID);
 
 -- Set primary key for RegionAndVerticalData
 
@@ -548,9 +540,9 @@ EXEC sp_rename 'dbo.CustomerMRRData', 'DimCustomerMRRData';
 
 EXEC sp_rename 'dbo.CustomerRevenueData', 'DimCustomerRevenueData';
 
-EXEC sp_rename 'dbo.HelpTicketData', 'FactHelpTicketData';
+EXEC sp_rename 'dbo.FactHelpTicketData', 'DimHelpTicketData';
 
-EXEC sp_rename 'dbo.ProductBugTaskData', 'FactProductBugTaskData';
+EXEC sp_rename 'dbo.FactProductBugTaskData', 'DimProductBugTaskData';
 
 EXEC sp_rename 'dbo.RegionAndVerticalData', 'DimRegionAndVerticalData';
 
@@ -569,7 +561,7 @@ EXEC sp_rename 'dbo.NewsletterInteractionData', 'DimNewsletterInteractionData';
 
 
 
--- 3.3 Creating clustered indexes
+-- 3.3 Creating clustered index
 
 
 -- FactCSATSurveyData
@@ -578,25 +570,12 @@ CREATE NONCLUSTERED INDEX NCI_FactCSATSurveyData_CustomerID
 	ON dbo.FactCSATSurveyData (CustomerID);
 
 
--- FactHelpTicketData
-
-CREATE NONCLUSTERED INDEX NCI_FactHelpTicketData_CustomerID
-	ON dbo.FactHelpTicketData (CustomerID);
-
-
--- FactProductBugTaskData
-
-CREATE NONCLUSTERED INDEX NCI_FactProductBugTaskData_CustomerID
-	ON dbo.FactProductBugTaskData (CustomerID);
-
-
-
--- Check created indexes 
+-- Check created index 
 
 SELECT name
 FROM sys.indexes
 WHERE type_desc = 'NONCLUSTERED'
-
+ AND name LIKE 'NCI%'
 
 
 ----------------------------------------------------------------------
@@ -669,8 +648,6 @@ WHERE CustomerLevel IS NULL
 UPDATE DimStatusAndLevelData
 	SET CustomerLevel = 'No categorized'
 	WHERE CustomerLevel IS NULL;
-
-
 
 
 
