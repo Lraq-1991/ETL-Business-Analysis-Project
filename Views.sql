@@ -70,30 +70,13 @@ LEFT OUTER JOIN DimProductBugTaskData bug
 WHERE age.CustomerAgeInMonths IS NOT NULL
 GO
 
+-- Test View 
 SELECT *
 FROM vCustomers
 
 
--- 2. Store KPIs into Views 
-
-/*
-	Customer Engagement Rate: Level of interaction with marketing content (clicks, likes, comments).
-	Average Order Value (AOV): Average amount spent by a customer per transaction.
-	Customer Feedback Score: Average rating from customer reviews.
-
-*/
-
-
--- 2.1 Conversion Rate: Percentage of website visitors who make a purchase.
-
-SELECT *
-FROM DimStatusAndLevelData 
-WHERE Status = 'In Opportunity Pipeline'
-
-SELECT *
-FROM [dbo].[DimHelpTicketData]
-
 
 COMMIT TRANSACTION;
+
 
 
