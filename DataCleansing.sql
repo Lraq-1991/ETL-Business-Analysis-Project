@@ -45,7 +45,7 @@ EXEC sp_rename 'dbo.CSATSurveyData.Please rate the overall quality of our produc
 
 EXEC sp_rename 'dbo.CSATSurveyData.Please rate the usability of the panel', 'PanelUsabilityRate', 'COLUMN';
 
-EXEC sp_rename 'dbo.CSATSurveyData.Please rate your understanding of our reporting capabilities in', 'ReportCapabilityRate', 'COLUMN';
+EXEC sp_rename 'dbo.CSATSurveyData.Please rate your understanding of our reporting capabilities in', 'ReportCapability', 'COLUMN';
 
 
 -- c. Convert columns data types 
